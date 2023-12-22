@@ -74,6 +74,10 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
+# ./snooper.sh --extract-text-exif <plik>
+# ./snooper.sh --extract-text-file <plik>
+# ./snooper.sh --split-directory <folder> # domyslna komenda - file
+
 while [ $# -gt 0 ]; do
     case "$1" in
         -d|--basic-metadata)
