@@ -28,7 +28,9 @@ display_help(){
 	echo "Tomasz Skrond & Weronika Ryl"
 	echo --------------------------------------
     	echo "Options:"
-	echo "  -e, --extract-metadata  Extract metadata from given file"
+        echo "  -s, --split-directory   Perform an analysis of all files in the folder,"
+        echo "                          this option segregates all files by types."
+	echo "  -e, --extract-metadata  Extract metadata from given file and save it to a folder"
     	echo "  -g, --geotag            Display geotag information"
     	echo "  -a, --all               Display all available information"
 	echo "  -c, --clear             Clear all (global) analysis files and their folders"
@@ -37,6 +39,12 @@ display_help(){
 	echo "Additional info:"
 	echo "All global metadata (extracted using -e option) is saved in ~/.snooper directory with names of origin file and numeric value with date format %m%d%y%H%M%S (13 digits)"
 	echo "-------------------------------------"
+	echo "Command usages:"
+	echo "./snooper.sh [-s/--split-directory] <folder_name>"
+	echo "./snooper.sh [-e/--extract-metadata] <file_name>"
+	echo "./snooper.sh [-g/--geotag] <file_name>"
+	echo "./snooper.sh [-a/--all] <file_name>"
+	echo "./snooper.sh [-c/--clear]"
 }
 
 #sets path for output directory and file name when writing results to file is necessary
