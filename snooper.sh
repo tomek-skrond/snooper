@@ -37,6 +37,9 @@ display_help(){
 	echo "  -c, --clear             Clear all (global) analysis files and their folders"
 	echo "  -E, --exif-mode         Switches data extraction mode using exiftool (use with option -e and -a)"
 	echo "  -F, --file-mode         Switches data extraction mode using file command (use with option -e and -a)"
+	echo "  --sqlite                Option that exports CSV analysis data to SQLite3 database"
+	echo "  --export-dir            Mandatory option for SQLite export - sets analysis folder path"
+	echo "  --db-name               Optional for SQLite export - sets desired database name"
     	echo "  -h, --help              Display this help and exit"
 	echo ---------------------------------------------------------------------------
 	echo "Additional info:"
