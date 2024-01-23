@@ -228,6 +228,48 @@ EOF
 
 }
 
+verify_variables() {
+
+	DB_NAME=$1
+	DB_USER=$2
+	DB_HOST=$3
+	DB_PASSWORD=$4
+	DB_EXPORT_DIRECTORY=$(realpath "$5")
+
+        if [[ "$DB_NAME" == "" ]] || [[ "$DB_USER" == "" ]] || [[ "$DB_HOST" == "" ]] || [[ "$DB_PASSWORD" == "" ]] || [[ "$DB_EXPORT_DIRECTORY" == "" ]]; then
+            echo "ERROR: You did not specify mandatory variables, exiting"
+            exit 1
+        fi
+
+        if ! [[ $DB_PORT =~ ^[0-9]+$ ]]; then
+            echo "ERROR: Port number has to be a number, exiting"
+            exit 1
+        fi
+
+	if ! [ -d "$DB_EXPORT_DIRECTORY" ]; then
+                echo "ERROR: Prooath does not exist, exiting"
+                exit 1
+        fi
+
+        echo "Exporting DB to instance with:"
+        echo "DB Name: $DB_NAME"
+        echo "DB Port: $DB_PORT"
+        echo "DB User: $DB_USER"
+        echo "DB Host: $DB_HOST"
+        echo "DB Password (Debug): $DB_PASSWORD"
+        echo "Directory with export files: $DB_EXPORT_DIRECTORY"
+}
+
+mariadb_export() {
+	DB_NAME=$1
+        DB_USER=$2
+	DB_HOST=$3
+	DB_PASSWORD=$4
+	DB_EXPORT_DIRECTORY=$5
+	DB_PORT=$6
+	echo "not implemented yet"
+}
+
 # Main script
 if [ $# -lt 1 ]; then
     display_help
@@ -236,7 +278,11 @@ fi
 
 #DEFAULT GLOBALS
 export MODE="exif"
-export DB_NAME="database"
+export DB_NAME=""
+export DB_USER=""
+export DB_HOST=""
+export DB_PASSWORD=""
+export DB_PORT=""
 export DB_EXPORT_DIRECTORY=""
 
 mkdir -p $HOME/.snooper/exported_databases/
@@ -268,14 +314,37 @@ while [ $# -gt 0 ]; do
 	    shift
 	    DB_NAME="$1"
 	    ;;
+        --db-user)
+            shift
+            DB_USER="$1"
+            ;;
+        --db-host)
+            shift
+            DB_HOST="$1"
+            ;;
+        --db-password)
+            shift
+            DB_PASSWORD="$1"
+            ;;
 	--export-dir)
 	    shift
 	    DB_EXPORT_DIRECTORY="$1"
 	    ;;
+        --db-port)
+            shift
+            DB_PORT="$1"
+            ;;
 	--sqlite)
 	    echo Exporting contents from: $DB_EXPORT_DIRECTORY
 	    echo Exported SQLite DB name: ${DB_NAME}[.db]
 	    sqlite_export "$DB_EXPORT_DIRECTORY" "$DB_NAME"
+	    ;;
+	--mariadb)
+	    if [[ "$DB_PORT" == "" ]]; then
+	        DB_PORT="3306"
+	    fi
+	    verify_variables $DB_NAME $DB_USER $DB_HOST $DB_PASSWORD $DB_EXPORT_DIRECTORY
+	    mariadb_export $DB_NAME $DB_USER $DB_HOST $DB_PASSWORD $DB_EXPORT_DIRECTORY $DB_PORT
 	    ;;
         -h|--help)
             display_help
