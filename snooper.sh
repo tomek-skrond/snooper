@@ -133,7 +133,7 @@ split_directory(){
 	    continue
 	fi
 	#file --brief $f
-	FILETYPE=$(file --brief $f | sed -E 's/ /_/g; s/[(|)]//g; s/[\/]//g; s/\[//g' | awk -F, '{print $1}')
+	FILETYPE=$(file --brief $f | sed -E 's/ /_/g; s/[(|)]//g; s/[\/]//g; s/\[//g;' | awk -F, '{print $1}')
         if [ -z "$FILETYPE" ]; then
             FILETYPE="unknown"
         fi
@@ -228,6 +228,47 @@ EOF
 
 }
 
+mariadb_export() {
+        DB_NAME=$1
+        DB_USER=$2
+        DB_HOST=$3
+        DB_PASSWORD=$4
+        DB_EXPORT_DIRECTORY=$5
+        DB_PORT=$6
+        
+	# names of all tables (split_432413412/*)
+	tables=($(ls $DB_EXPORT_DIRECTORY))
+
+	for path in $DB_EXPORT_DIRECTORY/*;do
+		
+		table=$(basename $path)
+		csv_files=($(ls $DB_EXPORT_DIRECTORY/$table))
+		#echo $table
+		#echo $DB_EXPORT_DIRECTORY/$table/${csv_files[1]}
+		#cat $DB_EXPORT_DIRECTORY/$table/${csv_files[1]} >> $DB_EXPORT_DIRECTORY/$table/merged/${table}.csv
+		#cat $DB_EXPORT_DIRECTORY/$table/merged/${table}.csv
+
+		echo create dir $DB_EXPORT_DIRECTORY/$table/merged
+		mkdir -p $DB_EXPORT_DIRECTORY/$table/merged
+
+		# generate column names for each table
+		echo -n 'first cat'; cat $DB_EXPORT_DIRECTORY/$table/${csv_files[1]} | head -n 1 > $DB_EXPORT_DIRECTORY/$table/merged/${table}.csv
+		for data in ${csv_files[@]};do
+	                # feed all csv files (apart from extracted columns) into one file
+			#ls $DB_EXPORT_DIRECTORY/$table/merged/${table}.csv
+			echo why is this failing $table
+			echo i dont know $data
+			if [[ $data == "merged" ]]; then
+				echo continueaaaaa 
+				continue
+			fi
+	                echo -n 'second cat'; #cat $DB_EXPORT_DIRECTORY/$table/${data} >> $DB_EXPORT_DIRECTORY/$table/merged/${table}.csv
+
+		done
+	done
+
+}
+
 verify_variables() {
 
 	DB_NAME=$1
@@ -247,7 +288,7 @@ verify_variables() {
         fi
 
 	if ! [ -d "$DB_EXPORT_DIRECTORY" ]; then
-                echo "ERROR: Prooath does not exist, exiting"
+                echo "ERROR: Path does not exist, exiting"
                 exit 1
         fi
 
@@ -258,16 +299,6 @@ verify_variables() {
         echo "DB Host: $DB_HOST"
         echo "DB Password (Debug): $DB_PASSWORD"
         echo "Directory with export files: $DB_EXPORT_DIRECTORY"
-}
-
-mariadb_export() {
-	DB_NAME=$1
-        DB_USER=$2
-	DB_HOST=$3
-	DB_PASSWORD=$4
-	DB_EXPORT_DIRECTORY=$5
-	DB_PORT=$6
-	echo "not implemented yet"
 }
 
 # Main script
