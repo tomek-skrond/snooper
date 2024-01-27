@@ -5,10 +5,13 @@ Created by:  Tomasz Skrond & Weronika Ryl
 
 ### Options:
 ```
+1. Metadata extraction options (these operate on folders & files):
+
   -s, --split-directory   Perform an analysis of all files in the folder,
                           this option segregates all files by types.
-
   -e, --extract-metadata  Extract metadata from given file and save it to a folder
+
+2. Metadata analysis options (these just print into stdout):
 
   -g, --geotag            Display geotag information
 
@@ -16,15 +19,27 @@ Created by:  Tomasz Skrond & Weronika Ryl
 
   -c, --clear             Clear all (global) analysis files and their folders
 
+3. COMBINE WITH Options -e & -a:
+
   -E, --exif-mode         Switches data extraction mode using exiftool (use with option -e and -a)
 
   -F, --file-mode         Switches data extraction mode using file command (use with option -e and -a)
+
+  -P, --pdf-mode          Switches data extraction mode using pdfinfo command (use with option -e and -a)
+
+4. COMBINE WITH Option -s:
+
+  --format                Switches between format of output files (csv/json/html)
+
+5. COMBINE WITH Option -s output directory (split_[0-9]{12}):
 
   --sqlite                Option that exports CSV analysis data to SQLite3 database
 
   --export-dir            Mandatory option for SQLite export - sets analysis folder path
 
   --db-name               Optional for SQLite export - sets desired database name
+
+6. Help:
 
   -h, --help              Display this help and exit
 
