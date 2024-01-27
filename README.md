@@ -91,3 +91,37 @@ Exporting to SQLite3:
 ./snooper.sh [--export-dir] <directory_path> [--db-name] <database_name> [--sqlite]
 
 ```
+
+### Use cases
+
+#### HTML Directory Splitting
+You can use HTML Directory splitting option to create static HTML pages for a web server.
+
+First - create analysis in 'html' directory splitting format on desired directory:
+```
+./snooper.sh --format html -s /path/to/directory/
+```
+
+Above command will create analysis files in HTML formats in a path: `/path/to/directory/split_[0-9]{12}/html/`.
+
+You can upload analysis files into a web server static HTML root path (for nginx: /usr/share/nginx/html or /var/www/html).
+
+This can be achieved by directly copying files into web directory or if using Docker - mounting analysis directory into specified path.
+
+Using traditional nginx:
+```
+cp -r /path/to/directory/split_012724023736/html/* /var/www/html/
+```
+
+Using Docker:
+```
+docker run -dp 80:80 -v /path/to/directory/split_012724023736/html:/usr/share/nginx/html nginx
+```
+
+This way, you can access your analysis data via your Web browser to get a more readable experience.
+
+Remember to always specify HTTP path as if `/path/to/directory/split_012724023736/html` was your current directory:
+```
+curl http://localhost/<file_type>/<file_name>.html
+curl http://localhost/Python_script/writer.py.html
+```
