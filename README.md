@@ -31,7 +31,7 @@ Created by:  Tomasz Skrond & Weronika Ryl
 
   --format                Switches between format of output files (csv/json/html)
 
-5. COMBINE WITH Option -s output directory (split_[0-9]{12}):
+5. Metadata Export to SQLite Database (combine with option -s output directory (split_[0-9]{12})):
 
   --sqlite                Option that exports CSV analysis data to SQLite3 database
 

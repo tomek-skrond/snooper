@@ -253,7 +253,7 @@ sqlite_export() {
         
 	label=$(basename "$subdir" | cut -d. -f1)
         
-	#echo label: $label
+	echo label: $label
         
 	for file in "$subdir"/*; do
 	        #echo $file
