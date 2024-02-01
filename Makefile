@@ -1,2 +1,2 @@
 install:
-	sudo ./install_dependencies.sh
+	sudo ./installation/install_dependencies.sh

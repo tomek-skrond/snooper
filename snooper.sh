@@ -250,38 +250,40 @@ sqlite_export() {
      
     # Iterate through files in the directory
     for subdir in "$DB_EXPORT_DIRECTORY"/*; do
-        
+
+ 	if [ ! -d "$subdir" ]; then
+        	echo "Directory does not exist."
+        	continue
+	fi
+ 
 	label=$(basename "$subdir" | cut -d. -f1)
         
 	echo Table name: $label
         
-#	mkdir -p "$subdir"/all
+	mkdir -p "$subdir"/all
 
-#	for file in "$subdir"/*; do head -n 1 "$file" > "$subdir"/all/all.csv; done
+	for file in "$subdir"/*; do head -n 1 "$file" > "$subdir"/all/all.csv; done
 
 	for file in "$subdir"/*; do
-	        #echo $file
-	        echo $(basename $file)	
-		if [ "${file##*.}" == "csv" ]; then
-         	    # Create a table based on the label
-        	    sqlite3 $HOME/.snooper/exported_databases/${DB_NAME}.db <<EOF
+
+		tail -n +2 "$file" >> "$subdir"/all/all.csv
+
+		sqlite3 $HOME/.snooper/exported_databases/${DB_NAME}.db <<EOF
 CREATE TABLE IF NOT EXISTS "$label" (
-    $(head -n 1 "$file" | sed 's/,/ TEXT, /g') TEXT
+    $(head -n 1 "$subdir"/all/all.csv)
 );
 EOF
-		    echo "First one line of file"
-		    head -n 1 "$file"
-		    echo "all other lines"
-		    tail -n +2 "$file"
 
-         	    # Import data into the table
-        	    sqlite3 $HOME/.snooper/exported_databases/${DB_NAME}.db <<EOF
-.mode csv
-.import "$file" "$label"
-EOF
-        	    echo "Table '$label' created and data imported."
-	        fi
         done
+        
+	echo "Uploading consolidated .csv file"
+        sqlite3 $HOME/.snooper/exported_databases/${DB_NAME}.db <<EOF
+.mode csv
+.import "$subdir/all/all.csv" "$label"
+EOF
+    	echo "Cleanup"
+	rm -rf "$subdir/all/"
+
     done
 
 }
