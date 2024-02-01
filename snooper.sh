@@ -239,7 +239,7 @@ remove_cache() {
 
 sqlite_export() {
     # Specify the directory
-    DB_EXPORT_DIRECTORY="$1"
+    DB_EXPORT_DIRECTORY=$(realpath "$1")
     DB_NAME="$2"
 
     # check if directory exists
@@ -253,8 +253,12 @@ sqlite_export() {
         
 	label=$(basename "$subdir" | cut -d. -f1)
         
-	echo label: $label
+	echo Table name: $label
         
+#	mkdir -p "$subdir"/all
+
+#	for file in "$subdir"/*; do head -n 1 "$file" > "$subdir"/all/all.csv; done
+
 	for file in "$subdir"/*; do
 	        #echo $file
 	        echo $(basename $file)	
@@ -265,6 +269,11 @@ CREATE TABLE IF NOT EXISTS "$label" (
     $(head -n 1 "$file" | sed 's/,/ TEXT, /g') TEXT
 );
 EOF
+		    echo "First one line of file"
+		    head -n 1 "$file"
+		    echo "all other lines"
+		    tail -n +2 "$file"
+
          	    # Import data into the table
         	    sqlite3 $HOME/.snooper/exported_databases/${DB_NAME}.db <<EOF
 .mode csv
