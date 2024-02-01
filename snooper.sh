@@ -236,7 +236,13 @@ remove_cache() {
     echo "Cleaning up analysis files"
     rm -rf $HOME/.snooper/*
 }
-
+check_if_file() {
+	file=$1
+        if ! [[ -f "$file" ]]; then
+        	echo "$file not a file - skipping"
+                continue
+        fi
+}
 sqlite_export() {
     # Specify the directory
     DB_EXPORT_DIRECTORY=$(realpath "$1")
@@ -262,9 +268,24 @@ sqlite_export() {
         
 	mkdir -p "$subdir"/all
 
-	for file in "$subdir"/*; do head -n 1 "$file" > "$subdir"/all/all.csv; done
-
+	echo "here1"
+	
 	for file in "$subdir"/*; do
+
+		if ! [[ -f "$file" ]]; then
+                        #echo "$file not a file - skipping"
+                        continue
+                fi
+
+		head -n 1 "$file" > "$subdir"/all/all.csv
+	done
+	echo "here2"
+	for file in "$subdir"/*; do
+
+                if ! [[ -f "$file" ]]; then
+                        #echo "$file not a file - skipping"
+                        continue
+                fi
 
 		tail -n +2 "$file" >> "$subdir"/all/all.csv
 
